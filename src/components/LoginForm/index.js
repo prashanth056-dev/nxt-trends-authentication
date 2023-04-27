@@ -1,7 +1,5 @@
 import './index.css'
 
-import {Link} from 'react-router-dom'
-
 import {Component} from 'react'
 
 class LoginForm extends Component {
@@ -9,6 +7,7 @@ class LoginForm extends Component {
     username: '',
     password: '',
     errorText: '',
+    showSubmitError: false,
   }
 
   onChangeUsername = event => {
@@ -26,7 +25,6 @@ class LoginForm extends Component {
 
   submitForm = async event => {
     event.preventDefault()
-    console.log('prevent')
     const {username, password} = this.state
     const userDetails = {username, password}
     const url = 'https://apis.ccbp.in/login'
@@ -40,65 +38,62 @@ class LoginForm extends Component {
       this.onSubmitSuccess()
     } else {
       this.setState({
-        username: '',
-        password: '',
-        errorText: "*Username and Password didn't match",
+        errorText: data.error_msg,
+        showSubmitError: true,
       })
     }
   }
 
   render() {
-    const {username, password, errorText} = this.state
+    const {username, password, errorText, showSubmitError} = this.state
 
     return (
-      <Link to="/login" className="link">
-        <div className="login-cont">
+      <div className="login-cont">
+        <img
+          src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-login-img.png"
+          alt="website login"
+          className="login-image"
+        />
+        <form className="form-cont" onChange={this.submitForm}>
           <img
-            src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-login-img.png"
-            alt="website login"
-            className="login-image"
+            src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-logo-img.png"
+            alt="website logo"
+            className="logo-image"
           />
-          <form className="form-cont">
-            <img
-              src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-logo-img.png"
-              alt="website logo"
-              className="logo-image"
+          <div className="input-cont">
+            <label htmlFor="username">USERNAME</label>
+            <br />
+            <input
+              type="text"
+              value={username}
+              placeholder="Username"
+              id="username"
+              className="input"
+              onChange={this.onChangeUsername}
             />
-            <div className="input-cont">
-              <label htmlFor="username">USERNAME</label>
-              <br />
-              <input
-                type="text"
-                value={username}
-                placeholder="Username"
-                id="username"
-                className="input"
-                onChange={this.onChangeUsername}
-              />
-            </div>
-            <div className="input-cont">
-              <label htmlFor="password">PASSWORD</label>
-              <br />
-              <input
-                type="password"
-                value={password}
-                placeholder="Password"
-                id="password"
-                className="input"
-                onChange={this.onChangePassword}
-              />
-            </div>
-            <button
-              className="btn button"
-              type="submit"
-              onClick={this.submitForm}
-            >
-              Login
-            </button>
-            <p>{errorText}</p>
-          </form>
-        </div>
-      </Link>
+          </div>
+          <div className="input-cont">
+            <label htmlFor="password">PASSWORD</label>
+            <br />
+            <input
+              type="password"
+              value={password}
+              placeholder="Password"
+              id="password"
+              className="input"
+              onChange={this.onChangePassword}
+            />
+          </div>
+          <button
+            className="btn button"
+            type="submit"
+            onClick={this.submitForm}
+          >
+            Login
+          </button>
+          {showSubmitError && <p className="error-message">{errorText}</p>}
+        </form>
+      </div>
     )
   }
 }
